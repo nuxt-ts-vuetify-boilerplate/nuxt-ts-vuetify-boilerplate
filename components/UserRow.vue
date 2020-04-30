@@ -7,20 +7,76 @@
       <v-icon color="primary" v-if="user.status">mdi-check-circle</v-icon>
       <v-icon color="error" v-else>mdi-stop-circle</v-icon>
     </td>
-    <td>
+    <td class="d-flex justify-center align-center">
+      <v-btn color="primary" @click="showDialog">
+        <v-icon>mdi-pencil</v-icon>
+      </v-btn>
 
+      <v-dialog v-model="isShowDialog" max-width="500">
+        <v-card>
+          <v-card-title>
+            <v-icon>mdi-pencil</v-icon>
+            {{ user.displayName }}
+          </v-card-title>
+
+          <v-card-text>
+            <v-form @submit.prevent="save">
+              <v-text-field placeholder="ID" v-model="editUser.ID" disabled></v-text-field>
+              <v-text-field placeholder="display name" v-model="editUser.displayName"></v-text-field>
+              <v-text-field placeholder="created date" v-model="editUser.createdFormatted" disabled></v-text-field>
+              <v-label>
+                <v-switch label="status" v-model="editUser.status"></v-switch>
+              </v-label>
+
+              <div class="d-flex justify-end">
+                <v-btn type="submit" color="primary">
+                  <v-icon>mdi-content-save</v-icon>
+                </v-btn>
+              </div>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </td>
   </tr>
 </template>
 
 <script lang="ts">
-  import {Component, Prop, Vue} from 'nuxt-property-decorator'
+  import {Component, Prop, Provide, Vue, Watch} from 'nuxt-property-decorator'
   import User from '~/scripts/model/User'
 
   @Component
   export default class UserRow extends Vue {
     @Prop()
-    user!: User
+    public value!: User
+
+    @Watch('value')
+    changeValue(user: User) {
+      this.editUser = user
+    }
+
+    @Provide()
+    editUser: User = this.user.clone()
+
+    @Provide()
+    isShowDialog: boolean = false
+
+    get user() {
+      if (typeof this.value === 'undefined') {
+        return new User('', '', new Date(), false)
+      }
+      return this.value;
+    }
+
+    showDialog() {
+      this.editUser = this.user.clone()
+      this.isShowDialog = true
+    }
+
+    save() {
+      this.$emit('input', this.editUser)
+      this.isShowDialog = false
+    }
   }
 </script>
 

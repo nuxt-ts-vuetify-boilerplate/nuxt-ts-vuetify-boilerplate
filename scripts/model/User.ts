@@ -21,4 +21,8 @@ export default class User {
       ('00' + val.getMinutes()).slice(-2) + ':' +
       ('00' + val.getSeconds()).slice(-2)
   }
+
+  public clone(): User {
+    return new User(this.ID, this.displayName, this._created!, this.status);
+  }
 }

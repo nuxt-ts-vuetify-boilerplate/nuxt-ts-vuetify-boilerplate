@@ -12,7 +12,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr is="UserRow" v-for="u in users" :key="u.ID" :user="u"></tr>
+        <tr is="UserRow" v-for="(u, i) in users" :key="u.ID" v-model="users[i]"></tr>
         </tbody>
       </template>
     </v-simple-table>
