@@ -1,6 +1,20 @@
 <template>
   <div>
-    <v-simple-table>
+    <v-card>
+      <v-card-text>
+        <v-form @submit.prevent="">
+          <p>検索</p>
+          <div class="d-flex">
+            <v-text-field placeholder="検索ワードを入力" class="pt-0"></v-text-field>
+            <v-btn type="submit" class="ml-2">
+              <v-icon>mdi-magnify</v-icon>
+            </v-btn>
+          </div>
+        </v-form>
+      </v-card-text>
+    </v-card>
+
+    <v-simple-table class="mt-3">
       <template v-slot:default>
         <thead>
         <tr>
