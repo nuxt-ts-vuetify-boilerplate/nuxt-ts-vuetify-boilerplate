@@ -11,6 +11,11 @@
       <v-btn color="primary" @click="showDialog">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
+      <n-link :to="`/users/${user.ID}`" prefetch class="ml-2">
+        <v-btn color="primary">
+          <v-icon>mdi-text-box</v-icon>
+        </v-btn>
+      </n-link>
 
       <v-dialog v-model="isShowDialog" max-width="500">
         <v-card>

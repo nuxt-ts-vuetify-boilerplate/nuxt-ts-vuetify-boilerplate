@@ -35,7 +35,7 @@
 
 <script lang="ts">
   import {Component, Provide, Vue} from 'nuxt-property-decorator'
-  import UserRow from '~/components/UserRow.vue'
+  import UserRow from '~/components/users/UserRow.vue'
   import User from '~/scripts/model/User'
 
   @Component({
