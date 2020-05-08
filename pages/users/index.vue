@@ -40,6 +40,8 @@
   import LoadingModule from "~/store/loading";
   import {getModule} from "vuex-module-decorators";
   import NuxtLoading from "~/.nuxt/components/nuxt-loading.vue";
+  import ClientsModule from "~/store/clients";
+  import {ServiceUserGetUserRequest} from "~/api/serviceUserGetUser";
 
   @Component({
     components: {
@@ -51,22 +53,27 @@
     @Provide()
     loadingModule!: LoadingModule
     @Provide()
+    clientsModule!: ClientsModule
+    @Provide()
     public users: User[] = []
 
     created() {
       this.loadingModule = getModule(LoadingModule, this.$store)
+      this.clientsModule = getModule(ClientsModule, this.$store)
       this.loadUser()
     }
 
-    loadUser() {
+    async loadUser() {
       this.loadingModule.incrementLoading()
 
-      setTimeout(() => {
-        this.users = [
-          new User('testID_1', 'test', new Date(), true)
-        ]
+      try {
+        const req = new ServiceUserGetUserRequest()
+        const resp = await this.clientsModule.client.getUsers(req)
+
+        this.users = resp.users
+      } finally {
         this.loadingModule.decrementLoading()
-      }, 2000)
+      }
     }
   }
 </script>
