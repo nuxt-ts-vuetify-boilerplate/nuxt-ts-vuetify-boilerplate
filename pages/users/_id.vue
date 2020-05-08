@@ -37,18 +37,27 @@
 <script lang="ts">
   import {Component, Provide, Vue} from 'nuxt-property-decorator'
   import User from '~/scripts/model/User'
+  import LoadingModule from "~/store/loading";
+  import {getModule} from "vuex-module-decorators";
 
   @Component
   export default class UserDetailComponent extends Vue {
     @Provide()
-    public user!: User
+    loadingModule!: LoadingModule
+    @Provide()
+    public user: User = new User('', '', new Date(), false)
 
     created() {
+      this.loadingModule = getModule(LoadingModule, this.$store)
       this.loadUser()
     }
 
     loadUser() {
-      this.user = new User('testID_1', 'test', new Date(), true)
+      this.loadingModule.incrementLoading()
+      setTimeout(() => {
+        this.user = new User('testID_1', 'test', new Date(), true)
+        this.loadingModule.decrementLoading()
+      }, 2000)
     }
   }
 </script>

@@ -37,24 +37,36 @@
   import {Component, Provide, Vue} from 'nuxt-property-decorator'
   import UserRow from '~/components/users/UserRow.vue'
   import User from '~/scripts/model/User'
+  import LoadingModule from "~/store/loading";
+  import {getModule} from "vuex-module-decorators";
+  import NuxtLoading from "~/.nuxt/components/nuxt-loading.vue";
 
   @Component({
     components: {
+      NuxtLoading,
       UserRow,
     }
   })
   export default class UsersComponent extends Vue {
     @Provide()
+    loadingModule!: LoadingModule
+    @Provide()
     public users: User[] = []
 
     created() {
+      this.loadingModule = getModule(LoadingModule, this.$store)
       this.loadUser()
     }
 
     loadUser() {
-      this.users = [
-        new User('testID_1', 'test', new Date(), true)
-      ]
+      this.loadingModule.incrementLoading()
+
+      setTimeout(() => {
+        this.users = [
+          new User('testID_1', 'test', new Date(), true)
+        ]
+        this.loadingModule.decrementLoading()
+      }, 2000)
     }
   }
 </script>

@@ -61,11 +61,15 @@
     <v-footer :fixed="fixed" app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
+
+    <loading-dialog></loading-dialog>
   </v-app>
 </template>
 
 <script>
+import LoadingDialog from "../components/LoadingDialog";
 export default {
+  components: {LoadingDialog},
   data() {
     return {
       clipped: false,
