@@ -49,6 +49,8 @@
 <script lang="ts">
   import {Component, Prop, Provide, Vue, Watch} from 'nuxt-property-decorator'
   import User from '~/scripts/model/User'
+  import LoadingModule from "~/store/loading";
+  import {getModule} from "vuex-module-decorators";
 
   @Component
   export default class UserRow extends Vue {
@@ -61,6 +63,9 @@
     }
 
     @Provide()
+    loadingModule!: LoadingModule
+
+    @Provide()
     editUser: User = this.user.clone()
 
     @Provide()
@@ -70,7 +75,7 @@
       if (typeof this.value === 'undefined') {
         return new User('', '', new Date(), false)
       }
-      return this.value;
+      return this.value
     }
 
     showDialog() {
@@ -79,8 +84,18 @@
     }
 
     save() {
-      this.$emit('input', this.editUser)
-      this.isShowDialog = false
+      this.loadingModule.incrementLoading()
+
+      setTimeout(() => {
+        this.$emit('input', this.editUser)
+        this.isShowDialog = false
+
+        this.loadingModule.decrementLoading()
+      }, 2000);
+    }
+
+    created() {
+      this.loadingModule = getModule(LoadingModule, this.$store)
     }
   }
 </script>

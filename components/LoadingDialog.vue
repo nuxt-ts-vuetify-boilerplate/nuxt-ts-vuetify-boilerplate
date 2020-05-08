@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-dialog v-model="loadingModule.isLoading" max-width="300">
+    <v-dialog v-model="loadingModule.isLoading" max-width="300" persistent>
       <v-card>
         <v-card-title class="d-flex justify-center align-center">
           Now Loading
