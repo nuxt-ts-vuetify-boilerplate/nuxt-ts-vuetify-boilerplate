@@ -42,6 +42,7 @@
   import NuxtLoading from "~/.nuxt/components/nuxt-loading.vue";
   import ClientsModule from "~/store/clients";
   import {ServiceUserGetUserRequest} from "~/api/serviceUserGetUser";
+  import ErrorModule from "~/store/error";
 
   @Component({
     components: {
@@ -51,6 +52,8 @@
   })
   export default class UsersComponent extends Vue {
     @Provide()
+    errorModule!: ErrorModule
+    @Provide()
     loadingModule!: LoadingModule
     @Provide()
     clientsModule!: ClientsModule
@@ -58,6 +61,7 @@
     public users: User[] = []
 
     created() {
+      this.errorModule = getModule(ErrorModule, this.$store)
       this.loadingModule = getModule(LoadingModule, this.$store)
       this.clientsModule = getModule(ClientsModule, this.$store)
       this.loadUser()
@@ -69,8 +73,9 @@
       try {
         const req = new ServiceUserGetUserRequest()
         const resp = await this.clientsModule.client.getUsers(req)
-
         this.users = resp.users
+      } catch (e) {
+        this.errorModule.setError(e);
       } finally {
         this.loadingModule.decrementLoading()
       }

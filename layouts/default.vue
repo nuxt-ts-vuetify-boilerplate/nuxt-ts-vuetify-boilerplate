@@ -62,14 +62,16 @@
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
 
+    <error-dialog></error-dialog>
     <loading-dialog></loading-dialog>
   </v-app>
 </template>
 
 <script>
 import LoadingDialog from "../components/LoadingDialog";
+import ErrorDialog from "../components/ErrorDialog";
 export default {
-  components: {LoadingDialog},
+  components: {ErrorDialog, LoadingDialog},
   data() {
     return {
       clipped: false,
