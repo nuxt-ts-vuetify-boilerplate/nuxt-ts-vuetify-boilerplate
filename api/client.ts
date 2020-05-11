@@ -1,7 +1,8 @@
 // mock
-import {ServiceUserGetUserRequest, ServiceUserGetUserResponse} from "~/api/serviceUserGetUser";
 import User from "~/scripts/model/User";
 import {ServiceUserSearchUserRequest, ServiceUserSearchUserResponse} from "~/api/serviceUserSearchUser";
+import {ServiceUserGetUsersRequest, ServiceUserGetUsersResponse} from "~/api/serviceUserGetUsers";
+import {ServiceUserGetUserRequest, ServiceUserGetUserResponse} from "~/api/serviceUserGetUser";
 
 export default class Client {
   private users: Array<User> = [
@@ -26,6 +27,25 @@ export default class Client {
   }
 
   async getUsers(
+    param: ServiceUserGetUsersRequest,
+    headers?: { [key: string]: string },
+    options?: { [key: string]: any }
+  ): Promise<ServiceUserGetUsersResponse> {
+    return new Promise<ServiceUserGetUsersResponse>((resolve, reject) => {
+      setTimeout(() => {
+        if (typeof options !== "undefined" && options['failed']) {
+          reject()
+        }
+
+        const resp = new ServiceUserGetUsersResponse()
+        resp.users = this.users.slice(param.offset, param.offset + param.maxItems)
+
+        resolve(resp)
+      }, 2000)
+    });
+  }
+
+  async getUser(
     param: ServiceUserGetUserRequest,
     headers?: { [key: string]: string },
     options?: { [key: string]: any }
@@ -37,7 +57,14 @@ export default class Client {
         }
 
         const resp = new ServiceUserGetUserResponse()
-        resp.users = this.users.slice(param.offset, param.offset + param.maxItems)
+        this.users.some((u: User) => {
+          if (u.ID === param.id) {
+            resp.user = u
+            return true
+          }
+          return false
+        })
+
 
         resolve(resp)
       }, 2000)

@@ -2,10 +2,9 @@
 import User from "~/scripts/model/User";
 
 export class ServiceUserGetUserRequest {
-  public offset: number
-  public maxItems: number
+  public id: string = ""
 }
 
 export class ServiceUserGetUserResponse {
-  public users: Array<User>
+  public user!: User
 }

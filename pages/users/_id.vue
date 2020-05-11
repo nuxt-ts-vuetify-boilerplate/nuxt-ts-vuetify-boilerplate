@@ -39,25 +39,49 @@
   import User from '~/scripts/model/User'
   import LoadingModule from "~/store/loading";
   import {getModule} from "vuex-module-decorators";
+  import ClientsModule from "~/store/clients";
+  import {ServiceUserSearchUserRequest} from "~/api/serviceUserSearchUser";
+  import {ServiceUserGetUserRequest} from "~/api/serviceUserGetUser";
+  import ErrorModule from "~/store/error";
 
   @Component
   export default class UserDetailComponent extends Vue {
     @Provide()
     loadingModule!: LoadingModule
     @Provide()
+    errorModule!: ErrorModule
+    @Provide()
+    clientsModule!: ClientsModule
+
+    @Provide()
     public user: User = new User('', '', new Date(), false)
+
+    get userID(): string {
+      return this.$route.params.id
+    }
 
     created() {
       this.loadingModule = getModule(LoadingModule, this.$store)
+      this.errorModule = getModule(ErrorModule, this.$store)
+      this.clientsModule = getModule(ClientsModule, this.$store)
+
       this.loadUser()
     }
 
-    loadUser() {
+    async loadUser() {
       this.loadingModule.incrementLoading()
-      setTimeout(() => {
-        this.user = new User('testID_1', 'test', new Date(), true)
+
+      try {
+        const req = new ServiceUserGetUserRequest()
+        req.id = this.userID
+
+        const resp = await this.clientsModule.client.getUser(req)
+        this.user = resp.user
+      } catch (e) {
+        this.errorModule.setError(e);
+      } finally {
         this.loadingModule.decrementLoading()
-      }, 2000)
+      }
     }
   }
 </script>

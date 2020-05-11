@@ -45,7 +45,7 @@
   import {getModule} from "vuex-module-decorators";
   import NuxtLoading from "~/.nuxt/components/nuxt-loading.vue";
   import ClientsModule from "~/store/clients";
-  import {ServiceUserGetUserRequest} from "~/api/serviceUserGetUser";
+  import {ServiceUserGetUsersRequest} from "~/api/serviceUserGetUsers";
   import ErrorModule from "~/store/error";
   import {ServiceUserSearchUserRequest} from "~/api/serviceUserSearchUser";
 
@@ -109,7 +109,7 @@
       this.loadingModule.incrementLoading()
 
       try {
-        const req = new ServiceUserGetUserRequest()
+        const req = new ServiceUserGetUsersRequest()
         req.offset = offset
         req.maxItems = 5
 

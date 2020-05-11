@@ -7,7 +7,7 @@ import Client from "~/api/client";
   namespaced: true
 })
 export default class ClientsModule extends VuexModule {
-  private _client!: Client = new Client()
+  private _client: Client = new Client()
 
   @Mutation
   setToken(token: string) {
