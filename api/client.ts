@@ -3,10 +3,25 @@ import {ServiceUserGetUserRequest, ServiceUserGetUserResponse} from "~/api/servi
 import User from "~/scripts/model/User";
 
 export default class Client {
+  private users: Array<User> = [
+    new User('testID_1', 'test1', new Date(), true),
+    new User('testID_2', 'test2', new Date(), true),
+    new User('testID_3', 'test3', new Date(), true),
+    new User('testID_4', 'hoge', new Date(), true),
+    new User('testID_5', 'fuga', new Date(), true),
+    new User('testID_6', 'hoge2', new Date(), true),
+    new User('testID_7', 'fuga2', new Date(), true),
+    new User('testID_8', 'aaa', new Date(), false),
+    new User('testID_9', 'aaaa', new Date(), false),
+    new User('testID_A', 'bbb', new Date(), false),
+    new User('testID_B', 'bbbbb', new Date(), false),
+    new User('testID_C', 'xxxx', new Date(), false),
+  ]
+
   constructor(token?: string,
-              commonHeaders?: {[key: string]: string},
+              commonHeaders?: { [key: string]: string },
               baseURL?: string,
-              commonOptions?: {[key: string]: any}) {
+              commonOptions?: { [key: string]: any }) {
   }
 
   async getUsers(
@@ -17,26 +32,13 @@ export default class Client {
     return new Promise<ServiceUserGetUserResponse>((resolve, reject) => {
       setTimeout(() => {
         if (typeof options !== "undefined" && options['failed']) {
-          reject();
+          reject()
         }
 
-        const resp = new ServiceUserGetUserResponse();
-        resp.users = [
-          new User('testID_1', 'test1', new Date(), true),
-          new User('testID_2', 'test2', new Date(), true),
-          new User('testID_3', 'test3', new Date(), true),
-          new User('testID_4', 'hoge', new Date(), true),
-          new User('testID_5', 'fuga', new Date(), true),
-          new User('testID_6', 'hoge2', new Date(), true),
-          new User('testID_7', 'fuga2', new Date(), true),
-          new User('testID_8', 'aaa', new Date(), false),
-          new User('testID_9', 'aaaa', new Date(), false),
-          new User('testID_A', 'bbb', new Date(), false),
-          new User('testID_B', 'bbbbb', new Date(), false),
-          new User('testID_C', 'xxxx', new Date(), false),
-        ]
+        const resp = new ServiceUserGetUserResponse()
+        resp.users = this.users.slice(param.offset, param.offset + param.maxItems)
 
-        resolve(resp);
+        resolve(resp)
       }, 2000)
     });
   }

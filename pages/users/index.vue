@@ -30,6 +30,10 @@
         </tbody>
       </template>
     </v-simple-table>
+    <div>
+      <v-btn @click="prevPage">＜</v-btn>
+      <v-btn @click="nextPage">＞</v-btn>
+    </div>
   </div>
 </template>
 
@@ -57,21 +61,38 @@
     loadingModule!: LoadingModule
     @Provide()
     clientsModule!: ClientsModule
+
     @Provide()
     public users: User[] = []
+    @Provide()
+    currentOffset: number = 0
 
     created() {
       this.errorModule = getModule(ErrorModule, this.$store)
       this.loadingModule = getModule(LoadingModule, this.$store)
       this.clientsModule = getModule(ClientsModule, this.$store)
-      this.loadUser()
+
+      this.loadUser(this.currentOffset)
     }
 
-    async loadUser() {
+    prevPage() {
+      this.currentOffset -= 5
+      this.loadUser(this.currentOffset)
+    }
+
+    nextPage() {
+      this.currentOffset += 5
+      this.loadUser(this.currentOffset)
+    }
+
+    async loadUser(offset: number) {
       this.loadingModule.incrementLoading()
 
       try {
         const req = new ServiceUserGetUserRequest()
+        req.offset = offset
+        req.maxItems = 5
+
         const resp = await this.clientsModule.client.getUsers(req)
         this.users = resp.users
       } catch (e) {
