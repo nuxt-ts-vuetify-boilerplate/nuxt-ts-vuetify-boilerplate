@@ -1,6 +1,7 @@
 // mock
 import {ServiceUserGetUserRequest, ServiceUserGetUserResponse} from "~/api/serviceUserGetUser";
 import User from "~/scripts/model/User";
+import {ServiceUserSearchUserRequest, ServiceUserSearchUserResponse} from "~/api/serviceUserSearchUser";
 
 export default class Client {
   private users: Array<User> = [
@@ -37,6 +38,29 @@ export default class Client {
 
         const resp = new ServiceUserGetUserResponse()
         resp.users = this.users.slice(param.offset, param.offset + param.maxItems)
+
+        resolve(resp)
+      }, 2000)
+    });
+  }
+
+
+  async searchUsers(
+    param: ServiceUserSearchUserRequest,
+    headers?: { [key: string]: string },
+    options?: { [key: string]: any }
+  ): Promise<ServiceUserSearchUserResponse> {
+    return new Promise<ServiceUserSearchUserResponse>((resolve, reject) => {
+      setTimeout(() => {
+        if (typeof options !== "undefined" && options['failed']) {
+          reject()
+        }
+
+        const resp = new ServiceUserSearchUserResponse()
+        resp.users = this.users.filter((u: User) => {
+          return u.displayName.indexOf(param.searchText) !== -1 || u.ID == param.searchText
+        })
+        console.log(resp)
 
         resolve(resp)
       }, 2000)

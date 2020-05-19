@@ -2,10 +2,10 @@
   <div>
     <v-card>
       <v-card-text>
-        <v-form @submit.prevent="">
+        <v-form @submit.prevent="search">
           <p>検索</p>
           <div class="d-flex">
-            <v-text-field placeholder="検索ワードを入力" class="pt-0"></v-text-field>
+            <v-text-field placeholder="検索ワードを入力" class="pt-0" v-model="searchText"></v-text-field>
             <v-btn type="submit" class="ml-2">
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
@@ -47,6 +47,7 @@
   import ClientsModule from "~/store/clients";
   import {ServiceUserGetUserRequest} from "~/api/serviceUserGetUser";
   import ErrorModule from "~/store/error";
+  import {ServiceUserSearchUserRequest} from "~/api/serviceUserSearchUser";
 
   @Component({
     components: {
@@ -64,8 +65,11 @@
 
     @Provide()
     public users: User[] = []
+
     @Provide()
     currentOffset: number = 0
+    @Provide()
+    searchText: string = ""
 
     created() {
       this.errorModule = getModule(ErrorModule, this.$store)
@@ -83,6 +87,22 @@
     nextPage() {
       this.currentOffset += 5
       this.loadUser(this.currentOffset)
+    }
+
+    async search(){
+      this.loadingModule.incrementLoading()
+
+      try {
+        const req = new ServiceUserSearchUserRequest()
+        req.searchText = this.searchText
+
+        const resp = await this.clientsModule.client.searchUsers(req)
+        this.users = resp.users
+      } catch (e) {
+        this.errorModule.setError(e);
+      } finally {
+        this.loadingModule.decrementLoading()
+      }
     }
 
     async loadUser(offset: number) {
